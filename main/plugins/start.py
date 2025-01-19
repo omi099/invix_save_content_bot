@@ -3,6 +3,9 @@
 import os
 from .. import bot as Invix
 from telethon import events, Button
+from ..plugins.helpers import force_sub
+from decouple import config
+
 
 #from ethon.mystarts import start_srb
     
@@ -39,19 +42,19 @@ async def remt(event):
         await event.edit('Removed!')
     except Exception:
         await event.edit("No thumbnail saved.")                        
-  
+
+FORCESUB = config("FORCESUB", default="")
+
 @Invix.on(events.NewMessage(incoming=True, pattern=f"{S}"))
 async def start(event):
+    user_id = event.sender_id
+    if FORCESUB:
+        force_sub_status, force_sub_message = await force_sub(Invix, FORCESUB, user_id, "Please join the channel to use this bot.")
+        if force_sub_status:
+            await event.reply(force_sub_message)
+            return
+
     text = "👋 Hi, I am 'Save Restricted Content ' bot.\n\n✅ Send me the Link of any message of Restricted Channels to Clone it here.\nFor private channel's messages, send the Invite Link first.\n\n👨🏻‍💻Owner: https://telegram.dog/Mister_invisiblebot.\n**support:** https://telegram.dog/mr_invisible_bots"
-    #await start_srb(event, text)
-    '''
-    await event.reply(text, 
-                      buttons=[
-                              [Button.inline("SET THUMB.", data="set"),
-                               Button.inline("REM THUMB.", data="rem")],        
-                              ])                             
-    '''                          
-    
     await event.reply(text, 
                       buttons=[
                               [Button.inline("SET THUMB.", data="set"),
