@@ -50,17 +50,17 @@ async def join(client, invite_link):
     
     
 #----------------------------------
-  async def force_sub(client, channel, id, ft):
-    s, r = False, None
-    try:
-        x = await client(GetParticipantRequest(channel=channel, participant=int(id)))
-        left = x.stringify()
-        s, r = (True, ft) if 'left' in left else (False, None)
-    except UserNotParticipantError:
-        s, r = True, f"To use this bot you've to join @{channel}."
-    except Exception as e:
-        s, r = True, f"ERROR: {e}. Please check your channel id or join the channel manually."
-    return s, r
+async def force_sub(client, channel, id, ft):
+  s, r = False, None
+  try:
+      x = await client(GetParticipantRequest(channel=channel, participant=int(id)))
+      left = x.stringify()
+      s, r = (True, ft) if 'left' in left else (False, None)
+  except UserNotParticipantError:
+      s, r = True, f"To use this bot you've to join @{channel}."
+  except Exception as e:
+      s, r = True, f"ERROR: {e}. Please check your channel id or join the channel manually."
+  return s, r
 
 #------------------------------
 def TimeFormatter(milliseconds) -> str:
