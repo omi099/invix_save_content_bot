@@ -1,56 +1,75 @@
-#Github.com/mrinvisible7
+# Don't Remove Credit Tg - @VJ_Botz
+# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
+# Ask Doubt on telegram @KingVJ01
 
-from pyrogram import Client
+from pyrogram import Client, filters
+from pyrogram.errors import UserNotParticipant
+from config import API_ID, API_HASH, BOT_TOKEN, FORCE_SUB
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from telethon.sessions import StringSession
-from telethon.sync import TelegramClient
+class Bot(Client):
 
-from decouple import config
-import logging, time, sys
+    def __init__(self):
+        super().__init__(
+            "techvj login",
+            api_id=API_ID,
+            api_hash=API_HASH,
+            bot_token=BOT_TOKEN,
+            plugins=dict(root="TechVJ"),
+            workers=50,
+            sleep_threshold=10
+        )
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
-logging.getLogger("telethon").setLevel(logging.WARNING)
+      
+    async def start(self):
+            
+        await super().start()
+        print('✔️ Bot Started Modified By 𝐖𝐎𝐎𝐃𝐜𝐫𝐚𝐟𝐭')
 
+    async def stop(self, *args):
 
-# variables
-API_ID = config("API_ID", default=None, cast=int)
-API_HASH = config("API_HASH", default=None)
-BOT_TOKEN = config("BOT_TOKEN", default=None)
-SESSION = config("SESSION", default=None)
-FORCESUB = config("FORCESUB", default=None)
-AUTH = config("AUTH", default=None)
-SUDO_USERS = []
-if len(AUTH) != 0:
-    SUDO_USERS = {int(AUTH.strip()) for AUTH in AUTH.split()}
-else:
-    SUDO_USERS = set()
+        await super().stop()
+        print('Bot Stopped Bye')
 
-bot = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN) 
+# Don't Remove Credit Tg - @VJ_Botz
+# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
+# Ask Doubt on telegram @KingVJ01
 
-#userbot = Client(
-#    session_name=SESSION, 
-#    api_hash=API_HASH, 
-#    api_id=API_ID)
-userbot = Client("myacc",api_id=API_ID,api_hash=API_HASH,session_string=SESSION)
+async def force_sub(bot, update):
+    try:
+        user = await bot.get_chat_member(FORCE_SUB, update.from_user.id)
+        if user.status == "kicked":
+            await update.reply_text("Sorry Sir, You are Banned to use me. Contact admin")
+            return 400
+    except UserNotParticipant:
+        await update.reply_text(
+            text=f"**Please Join My Update Channel to use this Bot!**\n\n**Due to Overload, Only Channel Subscribers can use the Bot!**",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton("🤖 Join Updates Channel", url=f"https://t.me/{FORCE_SUB}")
+                    ]
+                ]
+            )
+        )
+        return 400
+    except Exception:
+        await update.reply_text("Something went wrong. Contact admin")
+        return 400
 
-try:
-    userbot.start()
-except BaseException:
-    print("Userbot Error ! Have you added SESSION while deploying??")
-    sys.exit(1)
+@Client.on_message(filters.private & (filters.command("start") | filters.regex("^(?!/start$).*")) & ~filters.edited)
+async def start(bot, message):
+    
+    # Check Force Sub or Handle /start
+    if message.text == "/start":
+        res = await force_sub(bot, message)
+        if res == 400:
+            return
+    else:
+        res = await force_sub(bot, message)
+        if res == 400:
+            return
 
-Bot = Client(
-    "SaveRestricted",
-    bot_token=BOT_TOKEN,
-    api_id=int(API_ID),
-    api_hash=API_HASH
-)    
-
-try:
-    Bot.start()
-except Exception as e:
-    #print(e)
-    logger.info(e)
-    sys.exit(1)
+    await message.reply_text(
+        text="Hello {} 👋".format(message.from_user.mention)
+    )
