@@ -50,7 +50,7 @@ async def join(client, invite_link):
     
     
 #----------------------------------
-async def force_sub(client, channel, id, ft):
+  async def force_sub(client, channel, id, ft):
     s, r = False, None
     try:
         x = await client(GetParticipantRequest(channel=channel, participant=int(id)))
@@ -58,8 +58,8 @@ async def force_sub(client, channel, id, ft):
         s, r = (True, ft) if 'left' in left else (False, None)
     except UserNotParticipantError:
         s, r = True, f"To use this bot you've to join @{channel}."
-    except Exception:
-        s, r = True, "ERROR: Add in ForceSub channel, or check your channel id."
+    except Exception as e:
+        s, r = True, f"ERROR: {e}. Please check your channel id or join the channel manually."
     return s, r
 
 #------------------------------
